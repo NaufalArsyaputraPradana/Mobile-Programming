@@ -74,12 +74,12 @@ class RestaurantProfileApp extends StatelessWidget {
                   buildCircleIcon(
                     Icons.map,
                     Colors.blueAccent,
-                    "https://www.google.com/maps/search/?api=1&query=-6.9827,110.4091",
+                    "https://maps.app.goo.gl/L1wJo4V1V3d2uniZ6",
                   ),
                   buildCircleIcon(
                     Icons.phone,
                     Colors.deepPurple,
-                    "tel:${restaurantData['phone']}",
+                    "https://wa.me/6282223199601${restaurantData['phone']}",
                   ),
                 ],
               ),
@@ -134,7 +134,7 @@ class RestaurantProfileApp extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(8),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black26,
             blurRadius: 5,
