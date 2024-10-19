@@ -12,10 +12,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Todo-List App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      title: 'Todo List App',
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: const TodoApp(),
     );
   }
@@ -37,8 +35,8 @@ class _TodoAppState extends State<TodoApp> {
 
   @override
   void initState() {
-    super.initState();
     refreshItemList();
+    super.initState();
   }
 
   void refreshItemList() async {
@@ -48,9 +46,10 @@ class _TodoAppState extends State<TodoApp> {
     });
   }
 
-  void searchItems(String keyword) async {
+  void searchItems() async {
+    final keyword = _searchController.text.trim();
     if (keyword.isNotEmpty) {
-      final todos = await dbHelper.getTodoByTitle('%$keyword%');
+      final todos = await dbHelper.getTodoByTitle(keyword);
       setState(() {
         _todos = todos;
       });
@@ -61,13 +60,12 @@ class _TodoAppState extends State<TodoApp> {
 
   void addItem(String title, String desc) async {
     final todo = Todo(
+      id: 0, // ID akan ditetapkan otomatis
       title: title,
       description: desc,
       completed: false,
     );
     await dbHelper.insertTodo(todo);
-    _titleController.clear();
-    _descController.clear();
     refreshItemList();
   }
 
@@ -104,29 +102,37 @@ class _TodoAppState extends State<TodoApp> {
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(),
               ),
-              onChanged: (value) => searchItems(value),
+              onChanged: (_) {
+                searchItems();
+              },
             ),
           ),
           Expanded(
             child: ListView.builder(
               itemCount: _todos.length,
               itemBuilder: (context, index) {
-                final todo = _todos[index];
+                var todo = _todos[index];
                 return ListTile(
-                  key: ValueKey(todo.id),
-                  leading: IconButton(
-                    icon: Icon(
-                      todo.completed
-                          ? Icons.check_circle
-                          : Icons.radio_button_unchecked,
-                    ),
-                    onPressed: () => updateItem(todo, !todo.completed),
-                  ),
+                  leading: todo.completed
+                      ? IconButton(
+                          icon: const Icon(Icons.check_circle),
+                          onPressed: () {
+                            updateItem(todo, false);
+                          },
+                        )
+                      : IconButton(
+                          icon: const Icon(Icons.radio_button_unchecked),
+                          onPressed: () {
+                            updateItem(todo, true);
+                          },
+                        ),
                   title: Text(todo.title),
                   subtitle: Text(todo.description),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
-                    onPressed: () => deleteItem(todo.id!),
+                    onPressed: () {
+                      deleteItem(todo.id);
+                    },
                   ),
                 );
               },
@@ -135,43 +141,47 @@ class _TodoAppState extends State<TodoApp> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddTodoDialog(context),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Tambah Todo'),
+              content: SizedBox(
+                width: 300,
+                height: 150,
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _titleController,
+                      decoration: const InputDecoration(hintText: 'Judul todo'),
+                    ),
+                    TextField(
+                      controller: _descController,
+                      decoration:
+                          const InputDecoration(hintText: 'Deskripsi todo'),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  child: const Text('Batalkan'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                TextButton(
+                  child: const Text('Tambah'),
+                  onPressed: () {
+                    addItem(_titleController.text, _descController.text);
+                    Navigator.pop(context);
+                    _titleController.clear();
+                    _descController.clear();
+                  },
+                ),
+              ],
+            ),
+          );
+        },
         child: const Icon(Icons.add),
-      ),
-    );
-  }
-
-  void _showAddTodoDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Tambah Todo'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(hintText: 'Judul todo'),
-            ),
-            TextField(
-              controller: _descController,
-              decoration: const InputDecoration(hintText: 'Deskripsi todo'),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            child: const Text('Batalkan'),
-            onPressed: () => Navigator.pop(context),
-          ),
-          TextButton(
-            child: const Text('Tambah'),
-            onPressed: () {
-              addItem(_titleController.text, _descController.text);
-              Navigator.pop(context);
-            },
-          ),
-        ],
       ),
     );
   }

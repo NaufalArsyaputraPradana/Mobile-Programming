@@ -12,6 +12,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false, // Hilangkan banner debug
       home: SafeArea(
         child: Scaffold(
           backgroundColor: pageBgColor,
@@ -19,7 +20,11 @@ class MainApp extends StatelessWidget {
             backgroundColor: headerBackColor,
             title: Text(
               "Kuliner Nusantara",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: pageBgColor,
+              ),
             ),
             centerTitle: true,
           ),

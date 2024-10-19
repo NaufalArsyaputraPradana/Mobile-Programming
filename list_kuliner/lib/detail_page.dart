@@ -32,7 +32,7 @@ class DetailPage extends StatelessWidget {
           children: <Widget>[
             Stack(
               children: <Widget>[
-                Image.asset(gambar, scale: 0.5),
+                Image.asset(gambar),
                 SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),

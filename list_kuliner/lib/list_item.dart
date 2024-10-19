@@ -49,6 +49,7 @@ class ListItem extends StatelessWidget {
               makanan.gambar,
               height: 75,
               width: 75,
+              fit: BoxFit.cover, // Menyesuaikan gambar
             ),
             const SizedBox(width: 10),
             Column(
@@ -57,8 +58,9 @@ class ListItem extends StatelessWidget {
                 Text(
                   makanan.nama,
                   style: const TextStyle(
-                      fontSize: 30, fontWeight: FontWeight.bold),
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
+                const SizedBox(height: 5),
                 Text(
                   makanan.deskripsi,
                   style: const TextStyle(fontWeight: FontWeight.w500),
