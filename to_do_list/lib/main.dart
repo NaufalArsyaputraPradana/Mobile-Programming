@@ -40,10 +40,14 @@ class _TodoAppState extends State<TodoApp> {
   }
 
   void refreshItemList() async {
-    final todos = await dbHelper.getAllTodos();
-    setState(() {
-      _todos = todos;
-    });
+    try {
+      final todos = await dbHelper.getAllTodos();
+      setState(() {
+        _todos = todos;
+      });
+    } catch (e) {
+      print('Error fetching todos: $e');
+    }
   }
 
   void searchItems() async {
@@ -59,14 +63,16 @@ class _TodoAppState extends State<TodoApp> {
   }
 
   void addItem(String title, String desc) async {
-    final todo = Todo(
-      id: 0, // ID akan ditetapkan otomatis
-      title: title,
-      description: desc,
-      completed: false,
-    );
-    await dbHelper.insertTodo(todo);
-    refreshItemList();
+    if (title.isNotEmpty && desc.isNotEmpty) {
+      final todo = Todo(
+        id: 0,
+        title: title,
+        description: desc,
+        completed: false,
+      );
+      await dbHelper.insertTodo(todo);
+      refreshItemList();
+    }
   }
 
   void updateItem(Todo todo, bool completed) async {
@@ -146,14 +152,13 @@ class _TodoAppState extends State<TodoApp> {
             context: context,
             builder: (context) => AlertDialog(
               title: const Text('Tambah Todo'),
-              content: SizedBox(
-                width: 300,
-                height: 150,
+              content: SingleChildScrollView(
                 child: Column(
                   children: [
                     TextField(
                       controller: _titleController,
-                      decoration: const InputDecoration(hintText: 'Judul todo'),
+                      decoration:
+                          const InputDecoration(hintText: 'Judul todo'),
                     ),
                     TextField(
                       controller: _descController,

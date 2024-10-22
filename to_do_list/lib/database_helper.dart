@@ -1,9 +1,9 @@
-import 'package:flutter_crud_sqflite/todo.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'dart:async';
 import 'dart:io' as io;
 import 'package:path_provider/path_provider.dart';
+import 'todo.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper.internal();
@@ -33,7 +33,7 @@ class DatabaseHelper {
   void _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE todos (
-        id INTEGER PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
         description TEXT,
         completed INTEGER NOT NULL
@@ -47,16 +47,13 @@ class DatabaseHelper {
     return todos.map((todo) => Todo.fromMap(todo)).toList();
   }
 
-  Future<Todo> getTodoById(int id) async {
-    var dbClient = await db;
-    var todo = await dbClient!.query('todos', where: 'id = ?', whereArgs: [id]);
-    return todo.map((todo) => Todo.fromMap(todo)).single;
-  }
-
   Future<List<Todo>> getTodoByTitle(String title) async {
     var dbClient = await db;
-    var todos = await dbClient!
-        .query('todos', where: 'title LIKE ?', whereArgs: ['%$title%']);
+    var todos = await dbClient!.query(
+      'todos',
+      where: 'title LIKE ?',
+      whereArgs: ['%$title%'],
+    );
     return todos.map((todo) => Todo.fromMap(todo)).toList();
   }
 
