@@ -12,24 +12,18 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, // Hilangkan banner debug
-      home: SafeArea(
-        child: Scaffold(
-          backgroundColor: pageBgColor,
-          appBar: AppBar(
-            backgroundColor: headerBackColor,
-            title: Text(
-              "Kuliner Nusantara",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: pageBgColor,
-              ),
-            ),
-            centerTitle: true,
+      home: Scaffold(
+        backgroundColor: pageBgColor,
+        appBar: AppBar(
+          backgroundColor: headerBackColor,
+          title: const Text(
+            "Kuliner Nusantara",
+            style: TextStyle(
+                fontSize: 24, fontWeight: FontWeight.bold, color: pageBgColor),
           ),
-          body: const HomePage(),
+          centerTitle: true,
         ),
+        body: const HomePage(),
       ),
     );
   }

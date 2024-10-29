@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:list_kuliner/detail_page.dart';
 import 'makanan.dart';
-import 'detail_page.dart';
+import 'styles.dart';
 
 class ListItem extends StatelessWidget {
   final Makanan makanan;
@@ -9,66 +10,70 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DetailPage(
-              gambar: makanan.gambar,
-              nama: makanan.nama,
-              detail: makanan.detail,
-              waktubuka: makanan.waktubuka,
-              kalori: makanan.kalori,
-              harga: makanan.harga,
-              gambarlain: makanan.gambarlain,
-              bahan: makanan.bahan,
-            ),
-          ),
-        );
+            context,
+            MaterialPageRoute(
+                builder: (context) => DetailPage(
+                      makanan: makanan,
+                    )));
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color.fromARGB(255, 178, 178, 178),
-              offset: const Offset(1.0, 2.0),
-              blurRadius: 6.0,
-            ),
-          ],
-        ),
+        margin: const EdgeInsets.all(10),
         height: 100,
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            boxShadow: [
+              const BoxShadow(
+                  color: headerBackColor, offset: Offset(1, 2), blurRadius: 6)
+            ]),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset(
-              makanan.gambar,
-              height: 75,
-              width: 75,
-              fit: BoxFit.cover, // Menyesuaikan gambar
-            ),
+            gambar(),
             const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  makanan.nama,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  makanan.deskripsi,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
-                ),
-              ],
-            ),
+            deskripsiText(),
+            const Icon(Icons.food_bank_rounded, color: iconColor)
           ],
         ),
+      ),
+    );
+  }
+
+  ClipRRect gambar() {
+    return ClipRRect(
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
+      child: Image.asset(
+        makanan.gambar,
+        height: 75,
+        width: 85,
+        fit: BoxFit.cover,
+      ),
+    );
+  }
+
+  Expanded deskripsiText() {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(makanan.nama, style: textHeader1),
+          Text(
+            makanan.deskripsi,
+            style: const TextStyle(color: Colors.black38),
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(width: 10),
+          Text(
+            makanan.harga,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
